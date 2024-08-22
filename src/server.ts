@@ -1,29 +1,23 @@
 import fastify from "fastify";
-import { prisma } from "./lib/prisma";
+import { createTrip } from "./routes/create-trip";
+import cors from "@fastify/cors";
+import {
+  validatorCompiler,
+  serializerCompiler,
+} from "fastify-type-provider-zod";
+import { confirmTrip } from "./routes/confirm-trip";
 
 const app = fastify();
 
-{
-  /* retake at 31:00 */
-}
-
-app.get("/cadastrar", async () => {
-  await prisma.trip.create({
-    data: {
-      destination: "Florianóplis",
-      starts_at: new Date(),
-      ends_at: new Date(),
-    },
-  });
-
-  return "Registro cadastado com sucesso !";
+app.register(cors, {
+  origin: "*",
 });
 
-app.get("/listar", async () => {
-  const trips = await prisma.trip.findMany();
+app.setValidatorCompiler(validatorCompiler);
+app.setSerializerCompiler(serializerCompiler);
 
-  return trips;
-});
+app.register(createTrip);
+app.register(confirmTrip);
 
 app.listen({ port: 3333 }).then(() => {
   console.log("Server running");
