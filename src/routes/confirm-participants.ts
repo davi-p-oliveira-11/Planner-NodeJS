@@ -3,13 +3,12 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
-export async function confirmTrip(app: FastifyInstance) {
+export async function confirmParticipants(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(
     "/participants/:participantId/confirm",
     {
       schema: {
         params: z.object({
-          tripId: z.string().uuid(),
           participantId: z.string().uuid(),
         }),
       },
